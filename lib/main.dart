@@ -19,7 +19,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isLoading = true;
-
+  AuthUser? user;
   @override
   void initState() {
     super.initState();
@@ -28,9 +28,18 @@ class _MyAppState extends State<MyApp> {
 
   void _configureAmplify() async {
     await AmplifyService().configure();
-    setState(() {
-      _isLoading = false;
-    });
+    AuthUser currentUser;
+    try {
+      currentUser = await Amplify.Auth.getCurrentUser();
+      setState(() {
+        _isLoading = false;
+        user = currentUser;
+      });
+    } on Exception {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -39,18 +48,17 @@ class _MyAppState extends State<MyApp> {
       child: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : MaterialApp(
-              builder: Authenticator.builder(),
-              title: 'Flutter Demo',
+              title: 'Kabisa Ping Pong',
               theme: ThemeData(
-                primarySwatch: Colors.blue,
+                primarySwatch: Colors.purple,
               ),
-              initialRoute: '/splashScreen',
+              initialRoute: user != null ? '/main' : '/splashScreen',
               routes: {
                   '/splashScreen': (BuildContext context) =>
                       const SplashScreenView(),
                   '/main': (BuildContext context) {
                     return const AuthenticatedView(
-                      child: MyHomePage(title: 'Flutter Demo Home Page'),
+                      child: MyHomePage(title: 'Kabisa Ping Pong Ladder'),
                     );
                   },
                 }),
