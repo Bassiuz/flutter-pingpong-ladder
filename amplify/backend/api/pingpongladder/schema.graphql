@@ -1,0 +1,20 @@
+type Player @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  games: [Game] @manyToMany(relationName: "PlayerGame")
+  wonGames: [GameWinner] @manyToMany(relationName: "PlayerGameWinner")
+  name: String
+  bio: String
+}
+
+type GameWinner @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  winners: [Player] @manyToMany(relationName: "PlayerGameWinner")
+  game: Game @hasOne
+}
+
+type Game @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  players: [Player] @manyToMany(relationName: "PlayerGame")
+  winners: GameWinner @belongsTo
+  playedAt: AWSDateTime
+}

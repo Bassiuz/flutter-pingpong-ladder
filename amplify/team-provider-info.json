@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-pingpongladder-staging-205552-authRole",
+      "UnauthRoleArn": "arn:aws:iam::820116308106:role/amplify-pingpongladder-staging-205552-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::820116308106:role/amplify-pingpongladder-staging-205552-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "amplify-pingpongladder-staging-205552-deployment",
+      "UnauthRoleName": "amplify-pingpongladder-staging-205552-unauthRole",
+      "StackName": "amplify-pingpongladder-staging-205552",
+      "StackId": "arn:aws:cloudformation:eu-west-1:820116308106:stack/amplify-pingpongladder-staging-205552/4705fda0-b77e-11ec-bcb2-02909230b40d",
+      "AmplifyAppId": "d2ldddwuysvt1f"
+    },
+    "categories": {
+      "auth": {
+        "pingpongladder": {}
+      }
+    }
+  }
+}
