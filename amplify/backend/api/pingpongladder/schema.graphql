@@ -4,6 +4,7 @@ type Player @model @auth(rules: [{allow: public}]) {
   wonGames: [GameWinner] @manyToMany(relationName: "PlayerGameWinner")
   name: String
   bio: String
+  email: String
 }
 
 type GameWinner @model @auth(rules: [{allow: public}]) {
@@ -18,3 +19,4 @@ type Game @model @auth(rules: [{allow: public}]) {
   winners: GameWinner @belongsTo
   playedAt: AWSDateTime
 }
+ 

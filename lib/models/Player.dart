@@ -34,6 +34,7 @@ class Player extends Model {
   final List<PlayerGameWinner>? _wonGames;
   final String? _name;
   final String? _bio;
+  final String? _email;
   final TemporalDateTime? _createdAt;
   final TemporalDateTime? _updatedAt;
 
@@ -61,6 +62,10 @@ class Player extends Model {
     return _bio;
   }
   
+  String? get email {
+    return _email;
+  }
+  
   TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -69,15 +74,16 @@ class Player extends Model {
     return _updatedAt;
   }
   
-  const Player._internal({required this.id, games, wonGames, name, bio, createdAt, updatedAt}): _games = games, _wonGames = wonGames, _name = name, _bio = bio, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Player._internal({required this.id, games, wonGames, name, bio, email, createdAt, updatedAt}): _games = games, _wonGames = wonGames, _name = name, _bio = bio, _email = email, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Player({String? id, List<PlayerGame>? games, List<PlayerGameWinner>? wonGames, String? name, String? bio}) {
+  factory Player({String? id, List<PlayerGame>? games, List<PlayerGameWinner>? wonGames, String? name, String? bio, String? email}) {
     return Player._internal(
       id: id == null ? UUID.getUUID() : id,
       games: games != null ? List<PlayerGame>.unmodifiable(games) : games,
       wonGames: wonGames != null ? List<PlayerGameWinner>.unmodifiable(wonGames) : wonGames,
       name: name,
-      bio: bio);
+      bio: bio,
+      email: email);
   }
   
   bool equals(Object other) {
@@ -92,7 +98,8 @@ class Player extends Model {
       DeepCollectionEquality().equals(_games, other._games) &&
       DeepCollectionEquality().equals(_wonGames, other._wonGames) &&
       _name == other._name &&
-      _bio == other._bio;
+      _bio == other._bio &&
+      _email == other._email;
   }
   
   @override
@@ -106,6 +113,7 @@ class Player extends Model {
     buffer.write("id=" + "$id" + ", ");
     buffer.write("name=" + "$_name" + ", ");
     buffer.write("bio=" + "$_bio" + ", ");
+    buffer.write("email=" + "$_email" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -113,13 +121,14 @@ class Player extends Model {
     return buffer.toString();
   }
   
-  Player copyWith({String? id, List<PlayerGame>? games, List<PlayerGameWinner>? wonGames, String? name, String? bio}) {
+  Player copyWith({String? id, List<PlayerGame>? games, List<PlayerGameWinner>? wonGames, String? name, String? bio, String? email}) {
     return Player._internal(
       id: id ?? this.id,
       games: games ?? this.games,
       wonGames: wonGames ?? this.wonGames,
       name: name ?? this.name,
-      bio: bio ?? this.bio);
+      bio: bio ?? this.bio,
+      email: email ?? this.email);
   }
   
   Player.fromJson(Map<String, dynamic> json)  
@@ -138,11 +147,12 @@ class Player extends Model {
         : null,
       _name = json['name'],
       _bio = json['bio'],
+      _email = json['email'],
       _createdAt = json['createdAt'] != null ? TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'games': _games?.map((PlayerGame? e) => e?.toJson()).toList(), 'wonGames': _wonGames?.map((PlayerGameWinner? e) => e?.toJson()).toList(), 'name': _name, 'bio': _bio, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'games': _games?.map((PlayerGame? e) => e?.toJson()).toList(), 'wonGames': _wonGames?.map((PlayerGameWinner? e) => e?.toJson()).toList(), 'name': _name, 'bio': _bio, 'email': _email, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
 
   static final QueryField ID = QueryField(fieldName: "player.id");
@@ -154,6 +164,7 @@ class Player extends Model {
     fieldType: ModelFieldType(ModelFieldTypeEnum.model, ofModelName: (PlayerGameWinner).toString()));
   static final QueryField NAME = QueryField(fieldName: "name");
   static final QueryField BIO = QueryField(fieldName: "bio");
+  static final QueryField EMAIL = QueryField(fieldName: "email");
   static var schema = Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Player";
     modelSchemaDefinition.pluralName = "Players";
@@ -193,6 +204,12 @@ class Player extends Model {
     
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
       key: Player.BIO,
+      isRequired: false,
+      ofType: ModelFieldType(ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+      key: Player.EMAIL,
       isRequired: false,
       ofType: ModelFieldType(ModelFieldTypeEnum.string)
     ));

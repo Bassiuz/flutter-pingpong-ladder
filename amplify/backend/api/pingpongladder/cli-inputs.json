@@ -3,10 +3,10 @@
   "serviceConfiguration": {
     "apiName": "pingpongladder",
     "serviceName": "AppSync",
-    "gqlSchemaPath": "/tmp/amplify-9645aa89-b7cc-47e4-b291-e845924fcf96/amplify/backend/api/pingpongladder/schema.graphql",
+    "gqlSchemaPath": "/tmp/amplify-4d83e0d3-854b-4fd7-945b-8c48c3a3b0ee/amplify/backend/api/pingpongladder/schema.graphql",
     "defaultAuthType": {
       "mode": "API_KEY",
-      "keyDescription": "This is an api key",
+      "keyDescription": "api key description",
       "expirationTime": 30
     },
     "additionalAuthTypes": [

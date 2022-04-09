@@ -2,8 +2,9 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-
-import 'amplifyconfiguration.dart';
+import 'package:pingpong_ladder/amplify_service.dart';
+import 'package:pingpong_ladder/widgets/SplashScreenView.dart';
+import 'models/ModelProvider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +18,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -24,26 +27,33 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _configureAmplify() async {
-    try {
-      await Amplify.addPlugin(AmplifyAuthCognito());
-      await Amplify.configure(amplifyconfig);
-      print('Successfully configured');
-    } on Exception catch (e) {
-      print('Error configuring Amplify: $e');
-    }
+    await AmplifyService().configure();
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Authenticator(
-      child: MaterialApp(
-        builder: Authenticator.builder(),
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      ),
+      child: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : MaterialApp(
+              builder: Authenticator.builder(),
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+              ),
+              initialRoute: '/splashScreen',
+              routes: {
+                  '/splashScreen': (BuildContext context) =>
+                      const SplashScreenView(),
+                  '/main': (BuildContext context) {
+                    return const AuthenticatedView(
+                      child: MyHomePage(title: 'Flutter Demo Home Page'),
+                    );
+                  },
+                }),
     );
   }
 }
@@ -60,7 +70,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   AuthUser awsUser = AuthUser(userId: '0', username: 'Guest');
-
+  Player player = Player();
   Future<void> _incrementCounter() async {
     setState(() {
       _counter++;
@@ -77,8 +87,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _loadCurrentUser() async {
     var currentUser = await Amplify.Auth.getCurrentUser();
+    Player currentPlayer;
+    List<Player> players = await Amplify.DataStore.query(Player.classType,
+        where: Player.EMAIL.eq(currentUser.username));
+
+    if (players.isNotEmpty) {
+      currentPlayer = players.first;
+    } else {
+      //TO-DO: NAVIGATE TO CREATE ACCOUNT PAGE INSTEAD
+      currentPlayer = Player(
+          email: currentUser.username,
+          name: "Bas de Vaan",
+          bio:
+              "Potentieel koning van de wereld en afgevaardigde van de internationale kipproeverij");
+      await Amplify.DataStore.save(currentPlayer);
+    }
 
     setState(() {
+      player = currentPlayer;
       awsUser = currentUser;
     });
   }

@@ -34,7 +34,7 @@ export 'PlayerGameWinner.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "d8b3e5f2b909d4f727985b0ba3e43148";
+  String version = "c63b10866d54bdba983d2ac0c72be59c";
   @override
   List<ModelSchema> modelSchemas = [Game.schema, GameWinner.schema, Player.schema, PlayerGame.schema, PlayerGameWinner.schema];
   static final ModelProvider _instance = ModelProvider();
